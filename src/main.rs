@@ -10,6 +10,7 @@ use std::fs::{self, DirEntry};
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
+    println!("{:?}", args);
 
     if args.len() != 4 {
         panic!("Not enough args")
@@ -46,7 +47,7 @@ async fn main() {
         .into_iter()
         .map(|res| res.unwrap())
         .collect();
-    let email_regex = &args[4];
+    let email_regex = &args[3];
     let re = Regex::new(&(format!(r"([^-]*@{})", email_regex))).unwrap();
 
     for path in paths {
@@ -57,6 +58,7 @@ async fn main() {
         let new_dir = dir.clone() + "/" + email;
         fs::create_dir(&new_dir).unwrap_or_else(|_| {});
         let new_path = String::from(&new_dir) + "/" + path.file_name().to_str().unwrap();
+        println!("{} | {}", email, new_dir);
         fs::rename(str, new_path).unwrap();
     }
 
